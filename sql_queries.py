@@ -169,41 +169,38 @@ ON CONFLICT(user_id) DO UPDATE SET level = excluded.level
 """)
 
 song_table_insert = ("""
-insert into songs 
-( select 
+insert into songs (song_id, title, artist_id, year, duration)
+ select distinct
   song_id         ,
   title           ,
   artist_id       ,
   year            ,
   duration            
-from staging_songs )
-ON CONFLICT( song_id ) DO NOTHING
+from staging_songs 
 """)
 
 artist_table_insert = ("""
-insert into artists 
-( select 
+insert into artists (airtist_id, name, location, latitude, longitude )
+ select distinct
   artist_id         ,
   artist_name as name              ,
   artist_location as location          ,
   artist_latitude as latitude          ,
   artist_longitude as longitude              
-from staging_songs )
-ON CONFLICT( artist_id ) DO NOTHING
+from staging_songs 
 """)
 
 time_table_insert = ("""
-insert into time 
-( select 
-  ts/1000         ,
+insert into time ( start_time, hour, day, week, month, year, weekday )
+ select distinct 
+  ts as start_time        ,
   extract(hour from timestamp ts) as hour ,
   extract(day from timestamp ts) as day          ,
   extract(week from timestamp ts) as week          ,
   extract(month from timestamp ts) as month,
   extract(year from timestamp ts) as year,
   extract(weekday from timestamp ts) as  weekday                
-from staging_events )
-ON CONFLICT( start_time ) DO NOTHING
+from staging_events 
 """)
 
 # QUERY LISTS
